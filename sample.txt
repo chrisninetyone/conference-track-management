@@ -1,0 +1,19 @@
+Proper Unit Tests for Anyone 60min
+Why Python? 45min
+TDD for Embedded Systems 30min
+Dependency Management with Interpreted languages 45min
+Java 8, really end of life 45min
+From Java 8 to Java 12 lightning
+Managing Network Latency 60min
+BDD Gone Mad 45min
+Do you smell that? (Code Smells) 30min
+Open Office Space or Closets???? 30min
+Proper Pairing 45min
+Spring JuJu 60min
+Effective DSL (Domain Specific Languages) 60min
+Clojure... What Happened (on my project) 45min
+Effective Legacy Code Techniques... 30min
+Backends and FrontEnds in JavaScript? 30min
+CD on the Mainframe 60min
+Making Windows Development Enjoyable... 30min
+Modern Build Systems 30min
