@@ -54,6 +54,7 @@ const scheduleTalksForConference = (talks) => {
     const morningSessionLimit = 3 * 60;
     let morningSessionCount = 0;
     const afternoonSessionLimit = 5 * 60; //can be 4hrs
+    const afternoonSessionMinimum = 4 * 60;
     let afternoonSessionCount = 0;
     const maximumTimeForTrack = 8 * 60;
     let currentTrack = 'Track 1'
@@ -61,12 +62,19 @@ const scheduleTalksForConference = (talks) => {
     talks.forEach(talk => {
         talk.track = currentTrack;
         const talkFitsInMorningSession = morningSessionCount + talk.length <= morningSessionLimit;
+        const morningSessionFulfilled = morningSessionCount === morningSessionLimit;
         const talkFitsInAfternoonSession = afternoonSessionCount + talk.length <= afternoonSessionLimit;
+        const afternoonSessionMinReached = afternoonSessionCount >= afternoonSessionMinimum;
 
-        if (talkFitsInMorningSession) {
+        let fortyFiveCount = 0;
+
+        if (talkFitsInMorningSession && (talk.length == 60 || talk.length == 30 || talk.length == 45) && fortyFiveCount <= 2) {
+            //must fill up the morning session first
+            if (talk.length == 45) fortyFiveCount++
+
             morningSessionCount += talk.length
             talk.session = 'morning'
-        } else if (talkFitsInAfternoonSession) {
+        } else if (talkFitsInAfternoonSession && !afternoonSessionMinReached) {
             afternoonSessionCount += talk.length
             talk.session = 'afternoon'
         } else {
@@ -75,9 +83,15 @@ const scheduleTalksForConference = (talks) => {
             trackNumber++;
             currentTrack = 'Track ' + trackNumber;
             talk.track = currentTrack;
-            //reset the morning and afternoon session count
-            morningSessionCount = 0;
-            afternoonSessionCount = 0;
+            if (talk.length == 60 || talk.length == 30) {
+                talk.session = 'morning'
+                morningSessionCount = talk.length;
+                afternoonSessionCount = 0;
+            } else {
+                talk.session = 'afternoon';
+                afternoonSessionCount = talk.length;
+                morningSessionCount = 0;
+            }
         }
     })
     return talks
