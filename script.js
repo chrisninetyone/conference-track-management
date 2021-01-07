@@ -2,39 +2,18 @@ const inputElem = document.querySelector('input');
 const textArea = document.querySelector('textarea');
 const reader = new FileReader();
 
-
-
 inputElem.addEventListener('change', () => {
     const files = inputElem.files;
     if (files.length == 0) return;
     const file = files[0];
 
-
     reader.onload = (e) => {
         const file = e.target.result;
         const fileLines = file.split(/\r\n|\n/);
-
-        const conferenceTalks = createObjectsArrayFromLines(fileLines); //an array of talk objects
-
-        // const returnObj = {
-        //     morningSessions: {
-        //         1: [{title: 'session name', length: 45}],
-        //         2: [{title: 'session name', length: 45}]
-        //     },
-        //     morningSessions: {
-        //         1: [{title: 'session name', length: 45}],
-        //         2: [{title: 'session name', length: 45}]
-        //     }
-        // }
+        const conferenceTalks = createObjectsArrayFromLines(fileLines);
         const talksSplitBySession = splitMorningAndAfternoonSessions(conferenceTalks);
-        console.log(talksSplitBySession)
-
-        //take that returned object and create an array of strings to render out as lines
-
-        // const conferenceTalksWithTrackAndSession = scheduleTalksForConference(conferenceTalks)
-        // console.log(conferenceTalksWithTrackAndSession)
-
-        // textArea.value = fileLines.join('\n');
+        const arrayOfTracks = scheduleTimesForSessions(talksSplitBySession);
+        textArea.value = arrayOfTracks.flat().join('\n');
     }
 
     reader.onerror = (e) => alert(e.target.error.name);
@@ -136,7 +115,28 @@ const splitMorningAndAfternoonSessions = (talks) => {
         }
 
     })
-
-
     return returnObj;
+}
+
+const scheduleTimesForSessions = (talks) => {
+    const allTracksArray = [];
+    for (let i=1; i<=Object.keys(talks.morningSessions).length; i++) {
+
+        const currentTrack = talks.morningSessions[i][0].track;
+
+        const lunchHour = [{ title: 'Lunch', length: 60, }]
+        const networkingEvent = [{ title: 'Networking Event', length: 60}]
+        const allSessions = [...talks.morningSessions[i], ...lunchHour, ...talks.afternoonSessions[i], ...networkingEvent];
+
+        const d = new Date(2021, 01, 01, 09, 00);
+
+        const trackArray = [];
+        allSessions.forEach(session => {
+            const talkString = `Track ${currentTrack}  ${d.toLocaleTimeString()}  ${session.title}  ${session.length} min`;
+            trackArray.push(talkString);
+            d.setMinutes(d.getMinutes() + session.length);
+        })
+        allTracksArray.push(trackArray)
+    }
+    return allTracksArray;
 }
