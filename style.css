@@ -1,10 +1,16 @@
+body {
+    background-color: rgb(210, 233, 243);
+}
 div {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    height: 100vh
 }
 
 textarea {
     margin-top: 15px;
     width: 50%;
+
 }

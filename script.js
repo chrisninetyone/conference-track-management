@@ -119,7 +119,8 @@ const splitMorningAndAfternoonSessions = (talks) => {
 }
 
 const scheduleTimesForSessions = (talks) => {
-    const allTracksArray = [];
+    const divider = new Array(85).fill('-', 0, 85).join('');
+    const allTracksArray = [divider];
     for (let i=1; i<=Object.keys(talks.morningSessions).length; i++) {
 
         const currentTrack = talks.morningSessions[i][0].track;
@@ -137,6 +138,7 @@ const scheduleTimesForSessions = (talks) => {
             d.setMinutes(d.getMinutes() + session.length);
         })
         allTracksArray.push(trackArray)
+        allTracksArray.push(divider)
     }
     return allTracksArray;
 }
